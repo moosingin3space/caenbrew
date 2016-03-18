@@ -90,7 +90,7 @@ class BasePackage(object):
         """Configure, build, and install the package."""
         os.chdir(self._ARCHIVE_DIR)
 
-        configure_options = getattr(self, "_configure_options", {})
+        configure_options = getattr(self, "configure_options", {})
         self._cmd("./configure",
                   "--prefix", self._config["prefix_dir"],
                   *configure_options,
