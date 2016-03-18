@@ -54,6 +54,11 @@ class BasePackage(object):
 
         :returns bool: Whether or not the package is installed.
         """
+        if not self.artifacts:
+            raise ValueError("Package {} must have non-empty "
+                             "list of artifacts"
+                             .format(self.name))
+
         def is_artifact_installed(artifact):
             artifact_path = os.path.join(self._config["prefix_dir"], artifact)
             return os.path.exists(artifact_path)

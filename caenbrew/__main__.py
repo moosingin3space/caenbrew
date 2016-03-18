@@ -46,9 +46,9 @@ def install(ctx, name):
                    .format(click.style(name, bold=True)))
         return
 
-    # with package.prepare():
-    #     package.download()
-    #     package.install()
+    with package.prepare():
+        package.download()
+        package.install()
 
     click.echo("{} Package {} installed."
                .format(click.style("✓", fg="green"),
