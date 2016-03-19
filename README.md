@@ -1,4 +1,4 @@
-# Caenbrew [![Build Status](https://travis-ci.org/arxanas/caenbrew.svg?branch=master)](https://travis-ci.org/arxanas/caenbrew)
+# Caenbrew [![Build Status](https://travis-ci.org/arxanas/caenbrew.svg?branch=master)](https://travis-ci.org/arxanas/caenbrew) [![PyPI version](https://img.shields.io/pypi/v/caenbrew.svg)](https://pypi.python.org/pypi/caenbrew)
 
 Caenbrew lets you easily install packages on CAEN.
 
