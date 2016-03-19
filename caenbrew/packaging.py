@@ -29,6 +29,10 @@ class InstallFailure(RuntimeError):
     """Raised when an installation fails."""
 
 
+class UninstallFailure(RuntimeError):
+    """Raised when an uninstallation fails."""
+
+
 class BasePackage(object):
     """The base package installation class.
 
