@@ -113,6 +113,11 @@ def info(package):
     else:
         _fail(_describe(package, "has no documentation."))
 
+    if package.is_installed:
+        _succeed(_describe(package, "is installed."))
+    else:
+        _fail(_describe(package, "is not installed."))
+
 
 def _succeed(message):
     u"""Print a success message.
