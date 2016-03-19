@@ -43,7 +43,7 @@ def _lookup_package(ctx, param, value):
     try:
         return ctx.obj["packages"][value]
     except KeyError:
-        click.echo(_describe(value, "not found."))
+        _fail(_describe(value, "not found."))
         ctx.exit(1)
 
 
