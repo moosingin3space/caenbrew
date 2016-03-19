@@ -16,6 +16,7 @@ _HELP_SETTINGS = {
 @click.option("--verbose", "-v",
               is_flag=True,
               help="Show all output")
+@click.version_option()
 @click.pass_context
 def cli(ctx, verbose):
     """caenbrew -- install packages on CAEN."""
