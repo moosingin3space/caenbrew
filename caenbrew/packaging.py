@@ -204,3 +204,31 @@ class ConfigurePackage(ArtifactPackage):
 
         self._cmd("make", title="Building package")
         self._cmd("make", "install", title="Installing package")
+
+
+class SymlinkPackage(ArtifactPackage):
+    """A package which can be installed by symlinking files into place.
+
+    Subclasses may opt to omit the definition of `artifacts`. In this case, it
+    is inferred from the symlinks.
+
+    The following variables should be defined by subclasses.
+
+    :ivar dict symlinks: A mapping from source files to destination files.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Verify that there are symlinks for this package."""
+        assert self.symlinks
+
+        # Assume that the artifacts are the things we are symlinking to.
+        if not getattr(self, "artifacts", None):
+            self.artifacts = self.symlinks.values()
+
+        super(SymlinkPackage, self).__init__(*args, **kwargs)
+
+    def install(self):
+        """Symlink all the files into place."""
+        for source, dest in self.symlinks.iteritems():
+            self._cmd("ln", "-s", source, self._artifact_path(dest),
+                      title="Installing {}".format(os.path.basename(dest)))
