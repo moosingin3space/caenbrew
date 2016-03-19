@@ -7,7 +7,7 @@ Caenbrew lets you easily install packages on CAEN.
 Run this in your terminal on CAEN:
 
 ```
-$ curl -fsSL https://raw.githubusercontent.com/arxanas/caenbrew/master/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/arxanas/caenbrew/master/install.sh | sh
 ```
 
 Then restart your terminal and brew away!
