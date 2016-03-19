@@ -2,7 +2,7 @@ import importlib
 import os.path
 import pkgutil
 
-from ._helpers import is_package
+from ..packaging import is_package
 
 
 def load_packages(module):

@@ -1,11 +1,12 @@
-from ._helpers import BasePackage, package
+from ..packaging import ConfigurePackage, package
 
 
 @package
-class EmacsPackage(BasePackage):
+class EmacsPackage(ConfigurePackage):
     """emacs - GNU project Emacs."""
 
     name = "emacs"
+    version = "24.5"
     artifacts = ["bin/emacs"]
 
     url = "http://ftp.wayne.edu/gnu/emacs/emacs-24.5.tar.xz"

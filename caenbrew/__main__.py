@@ -6,10 +6,16 @@ import caenbrew.packages
 from . import get_config
 from .packages import load_packages
 
+_HELP_SETTINGS = {
+    "help_option_names": ["-h", "--help"],
+}
+"""Click context settings to add '-h' as a help flag."""
 
-@click.group()
-@click.option("--verbose/-v",
+
+@click.group(context_settings=_HELP_SETTINGS)
+@click.option("--verbose", "-v",
               default=None,
+              is_flag=True,
               help="Show all output")
 @click.pass_context
 def cli(ctx, verbose):
@@ -30,26 +36,127 @@ def cli(ctx, verbose):
     }
 
 
-@cli.command()
-@click.argument("name")
-@click.pass_context
-def install(ctx, name):
-    """Install a package."""
+def _lookup_package(ctx, param, value):
+    """Convert a package name into an actual package."""
     try:
-        package = ctx.obj["packages"][name]
+        return ctx.obj["packages"][value]
     except KeyError:
-        click.echo("Package {} not found.".format(name))
-        return
+        click.echo(_describe(value, "not found."))
+        ctx.exit(1)
 
+
+@cli.command(context_settings=_HELP_SETTINGS)
+@click.argument("package", callback=_lookup_package)
+@click.option("--force", "-f", is_flag=True, help="Force (re)installation.")
+@click.pass_context
+def install(ctx, package, force):
+    """Install a package."""
     if package.is_installed:
-        click.echo("Package {} already installed."
-                   .format(click.style(name, bold=True)))
+        if force:
+            click.echo(_describe(package, "already installed, "
+                                          "but continuing anyways."))
+        else:
+            _succeed(_describe(package, "already installed."))
+            return
+
+    try:
+        with package.prepare():
+            package.download()
+            package.install()
+    except Exception as e:
+        _fail(_describe(
+            package,
+            "installation failed: {}"
+            .format(click.style(e.message, bold=True, fg="red"))
+        ))
+        if ctx.obj["verbose"]:
+            raise
+    except KeyboardInterrupt:
+        _fail("Cancelled.")
+    else:
+        _succeed(_describe(package, "installed."))
+
+
+@cli.command(context_settings=_HELP_SETTINGS)
+@click.argument("package", callback=_lookup_package)
+@click.pass_context
+def uninstall(ctx, package):
+    """Uninstall a package."""
+    if not package.is_installed:
+        _fail(_describe(package, "not installed."))
         return
 
-    with package.prepare():
-        package.download()
-        package.install()
+    try:
+        package.uninstall()
+    except Exception as e:
+        _fail(_describe(
+            package,
+            "installation failed: {}"
+            .format(click.style(e.message, bold=True, fg="red"))
+        ))
+        if ctx.obj["verbose"]:
+            raise
+    except KeyboardInterrupt:
+        _fail("Cancelled.")
+    else:
+        _succeed(_describe(package, "uninstalled."))
 
-    click.echo("{} Package {} installed."
-               .format(click.style("✓", fg="green"),
-                       click.style(package.name, bold=True)))
+
+@cli.command(context_settings=_HELP_SETTINGS)
+@click.argument("package", callback=_lookup_package)
+def info(package):
+    """Show information about a package."""
+    info = package.__doc__
+    if info:
+        click.echo(info)
+    else:
+        _fail(_describe(package, "has no documentation."))
+
+
+def _succeed(message):
+    u"""Print a success message.
+
+    Looks like this:
+
+        ✓ Something happened!
+
+    :param str message: The success message to print.
+    """
+    click.echo("{} {}".format(click.style("✓", fg="green"),
+                              message))
+
+
+def _fail(message):
+    u"""Print a failure message.
+
+    Looks like this:
+
+        ✗ Something happened!
+
+    :param str message: The failure message to print.
+    """
+    click.echo("{} {}".format(click.style("✗", fg="red"),
+                              message))
+
+
+def _describe(package, message):
+    """Describe a package with the given message.
+
+    Given package = VimPackage, message = "already installed", this would
+    return:
+
+        Package vim already installed
+
+    But "vim" would be bolded.
+
+    :param BasePackage|str package: The package or the package name.
+    :param str message: The message about the package.
+    :returns str: The formatted string with a bolded package name.
+    """
+    try:
+        package_name = package.name
+    except AttributeError:
+        package_name = package
+
+    return "Package {} {}".format(click.style(package_name, bold=True),
+                                  message)
