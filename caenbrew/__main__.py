@@ -14,7 +14,6 @@ _HELP_SETTINGS = {
 
 @click.group(context_settings=_HELP_SETTINGS)
 @click.option("--verbose", "-v",
-              default=None,
               is_flag=True,
               help="Show all output")
 @click.pass_context
@@ -22,10 +21,12 @@ def cli(ctx, verbose):
     """caenbrew -- install packages on CAEN."""
     config = get_config()
 
-    # Check against `None` because the user can specify a default verbosity in
-    # their config file.
-    if verbose is not None:
-        config["verbose"] = verbose
+    # If the user explicitly sets verbose on the command-line, override the
+    # configuration value.
+    if verbose:
+        config["verbose"] = True
+    elif "verbose" not in config:
+        config["verbose"] = False
 
     packages = load_packages(caenbrew.packages)
     packages = {i: j(config) for i, j in packages.iteritems()}
@@ -67,9 +68,9 @@ def install(ctx, package, force):
         _fail(_describe(
             package,
             "installation failed: {}"
-            .format(click.style(e.message, bold=True, fg="red"))
+            .format(click.style(str(e), bold=True, fg="red"))
         ))
-        if ctx.obj["verbose"]:
+        if not str(e) or ctx.obj["config"]["verbose"]:
             raise
     except KeyboardInterrupt:
         _fail("Cancelled.")
@@ -91,10 +92,10 @@ def uninstall(ctx, package):
     except Exception as e:
         _fail(_describe(
             package,
-            "installation failed: {}"
+            "uninstallation failed: {}"
             .format(click.style(e.message, bold=True, fg="red"))
         ))
-        if ctx.obj["verbose"]:
+        if not str(e) or ctx.obj["config"]["verbose"]:
             raise
     except KeyboardInterrupt:
         _fail("Cancelled.")
