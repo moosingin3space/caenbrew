@@ -1,6 +1,5 @@
 import contextlib
 import os
-import shutil
 import subprocess
 import tempfile
 
@@ -182,7 +181,23 @@ class ArtifactPackage(BasePackage):
         return os.path.join(self._config["prefix_dir"], artifact)
 
 
-class ConfigurePackage(ArtifactPackage):
+class TempDirMixin(object):
+    """A mixin to implement moving to a temporary directory for preparation."""
+
+    @contextlib.contextmanager
+    def prepare(self):
+        """Move to the temporary directory.
+
+        Sets `self._temp_dir`.
+        """
+        self._temp_dir = tempfile.mkdtemp()
+        os.chdir(self._temp_dir)
+        yield
+        self._cmd("rm", "-rf", self._temp_dir,
+                  title="Cleaning up")
+
+
+class ConfigurePackage(TempDirMixin, ArtifactPackage):
     """Install a package with a configure-make-make install loop.
 
     The following variables should be defined by subclasses.
@@ -200,14 +215,6 @@ class ConfigurePackage(ArtifactPackage):
 
     _ARCHIVE_DIR = "package_contents"
     """The directory to extract the archive into."""
-
-    @contextlib.contextmanager
-    def prepare(self):
-        """Set up the working directory to use for installation."""
-        self._temp_dir = tempfile.mkdtemp()
-        os.chdir(self._temp_dir)
-        yield
-        shutil.rmtree(self._temp_dir)
 
     def download(self):
         """Make a temporary directory and unpack the archive there."""
