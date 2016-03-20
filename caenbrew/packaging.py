@@ -1,4 +1,3 @@
-import collections
 import contextlib
 import os
 import shutil
@@ -32,14 +31,14 @@ def calculate_dependencies(package_cls):
 
     :param BasePackage package_cls: The package class.
     """
-    graph = collections.defaultdict(set)
+    graph = {}
 
     def add_to_graph(cls):
         if cls in graph:
             return
 
+        graph[cls] = set(cls.dependencies)
         for i in cls.dependencies:
-            graph[cls].add(i)
             add_to_graph(i)
 
     add_to_graph(package_cls)
