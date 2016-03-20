@@ -5,6 +5,7 @@ import caenbrew.packages
 
 from . import get_config
 from .packages import load_packages
+from .packaging import calculate_dependencies
 
 _HELP_SETTINGS = {
     "help_option_names": ["-h", "--help"],
@@ -61,10 +62,16 @@ def install(ctx, package, force):
             _succeed(_describe(package, "already installed."))
             return
 
+    dependencies = calculate_dependencies(type(package))
+    click.echo("Packages to install: {}"
+               .format(_package_names(dependencies)))
+
     try:
-        with package.prepare():
-            package.download()
-            package.install()
+        for i in dependencies:
+            package = ctx.obj["packages"][i.name]
+            with package.prepare():
+                package.download()
+                package.install()
     except Exception as e:
         _fail(_describe(
             package,
@@ -117,6 +124,12 @@ def info(package):
     click.echo()
     click.echo("Homepage: {}".format(package.homepage))
     click.echo("Version: {}".format(package.version))
+
+    if package.dependencies:
+        click.echo("Dependencies: {}"
+                   .format(_package_names(package.dependencies)))
+    else:
+        click.echo("Dependencies: none")
 
     if package.is_installed:
         _succeed(_describe(package, "is installed."))
@@ -171,3 +184,13 @@ def _describe(package, message):
 
     return "Package {} {}".format(click.style(package_name, bold=True),
                                   message)
+
+
+def _package_names(packages):
+    """Bold each package name in a comma-separated list of package names.
+
+    :param list packages: The list of packages.
+    :returns str: A comma-separated list of bolded package names.
+    """
+    return ", ".join(click.style(i.name, bold=True)
+                     for i in packages)

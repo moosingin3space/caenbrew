@@ -1,3 +1,4 @@
+import collections
 import contextlib
 import os
 import shutil
@@ -5,6 +6,7 @@ import subprocess
 import tempfile
 
 import click
+import toposort
 
 
 def package(cls):
@@ -25,6 +27,25 @@ def is_package(cls):
     return getattr(cls, "_is_package", False)
 
 
+def calculate_dependencies(package_cls):
+    """Get the dependencies for the package in installation order.
+
+    :param BasePackage package_cls: The package class.
+    """
+    graph = collections.defaultdict(set)
+
+    def add_to_graph(cls):
+        if cls in graph:
+            return
+
+        for i in cls.dependencies:
+            graph[cls].add(i)
+            add_to_graph(i)
+
+    add_to_graph(package_cls)
+    return toposort.toposort_flatten(graph)
+
+
 class InstallFailure(RuntimeError):
     """Raised when an installation fails."""
 
@@ -42,6 +63,9 @@ class BasePackage(object):
     :ivar str homepage: Required. The URL where the project homepage is.
     :ivar str version: Required. The version of the package.
     """
+
+    dependencies = set()
+    """The packages that this one depends on."""
 
     def __init__(self, config):
         """Initialize with the given configuration.

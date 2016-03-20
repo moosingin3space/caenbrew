@@ -16,5 +16,5 @@ setup(
     caenbrew=caenbrew.__main__:cli
     """,
     install_requires=["click==6.3",
-                      "sh==1.11"],
+                      "toposort==1.4"],
 )
