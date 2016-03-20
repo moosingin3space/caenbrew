@@ -114,6 +114,10 @@ def info(package):
     else:
         _fail(_describe(package, "has no documentation."))
 
+    click.echo()
+    click.echo("Homepage: {}".format(package.homepage))
+    click.echo("Version: {}".format(package.version))
+
     if package.is_installed:
         _succeed(_describe(package, "is installed."))
     else:
