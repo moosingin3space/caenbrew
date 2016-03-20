@@ -61,9 +61,11 @@ class BasePackage(object):
     :ivar str name: Required. The name of the package.
     :ivar str homepage: Required. The URL where the project homepage is.
     :ivar str version: Required. The version of the package.
+    :ivar list dependencies: Optional. A list of `BasePackage`s which the
+        package depends on. Defaults to the empty list.
     """
 
-    dependencies = set()
+    dependencies = []
     """The packages that this one depends on."""
 
     def __init__(self, config):
