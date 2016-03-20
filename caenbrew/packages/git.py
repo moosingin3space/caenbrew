@@ -1,5 +1,6 @@
 from ..packaging import ConfigurePackage, package
 
+
 @package
 class GitPackage(ConfigurePackage):
     """Git is a distributed version control system with fast performance."""

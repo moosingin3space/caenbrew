@@ -1,5 +1,6 @@
 from ..packaging import ConfigurePackage, package
 
+
 @package
 class CmakePackage(ConfigurePackage):
     """Cmake is an open-source, cross-platform family of build tools."""
