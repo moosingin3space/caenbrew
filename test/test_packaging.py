@@ -27,6 +27,8 @@ def test_base_package_needs_name():
     """Ensure that a `BasePackage` subclass must have a name."""
     class WithName(BasePackage):
         name = "foo"
+        homepage = "http://example.com"
+        version = "1.0"
 
     class WithoutName1(BasePackage):
         pass
@@ -48,6 +50,8 @@ class TestBasePackage(object):
         """Create a `BasePackage`."""
         class TestingPackage(BasePackage):
             name = "testing-package"
+            homepage = "http://example.com"
+            version = "1.0"
         self.package = TestingPackage(CONFIG)
 
     def test_abstract_is_installed(self):

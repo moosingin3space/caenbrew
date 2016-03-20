@@ -6,6 +6,7 @@ class FishPackage(ConfigurePackage):
     """fish is a smart and user-friendly command line shell."""
 
     name = "fish"
+    homepage = "https://fishshell.com/"
     version = "2.2.0"
     artifacts = ["bin/fish"]
 

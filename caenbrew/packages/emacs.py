@@ -6,6 +6,7 @@ class EmacsPackage(ConfigurePackage):
     """emacs - GNU project Emacs."""
 
     name = "emacs"
+    homepage = "https://www.gnu.org/software/emacs/"
     version = "24.5"
     artifacts = ["bin/emacs"]
 

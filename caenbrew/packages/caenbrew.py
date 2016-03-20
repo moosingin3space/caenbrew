@@ -6,6 +6,10 @@ class CaenbrewPackage(BasePackage):
     """Caenbrew: the best CAEN package manager around."""
 
     name = "caenbrew"
+    homepage = "https://github.com/arxanas/caenbrew"
+
+    # TODO: Actually get the correct version here.
+    version = "0.0.0"
 
     @property
     def is_installed(self):

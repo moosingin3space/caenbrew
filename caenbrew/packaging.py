@@ -39,6 +39,8 @@ class BasePackage(object):
     The following variables should be defined by subclasses.
 
     :ivar str name: Required. The name of the package.
+    :ivar str homepage: Required. The URL where the project homepage is.
+    :ivar str version: Required. The version of the package.
     """
 
     def __init__(self, config):
@@ -49,6 +51,8 @@ class BasePackage(object):
         self._config = config
 
         assert self.name
+        assert self.homepage
+        assert self.version
 
     @property
     def is_installed(self):
@@ -112,11 +116,10 @@ class BasePackage(object):
 
 
 class ArtifactPackage(BasePackage):
-    """A package with artifacts and a version.
+    """A package that creates certain files (called "artifacts").
 
     The following variables should be defined by subclasses.
 
-    :ivar str version: Required. The version of the package.
     :ivar list artifacts: Required. A list of files installed by the package.
         This is used to determine if the package is installed.
     """
@@ -127,7 +130,6 @@ class ArtifactPackage(BasePackage):
         Verify that the subclass has set the appropriate fields.
         """
         super(ArtifactPackage, self).__init__(*args, **kwargs)
-        assert self.version
         assert self.artifacts
 
     @property

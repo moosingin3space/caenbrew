@@ -6,6 +6,7 @@ class VimPackage(ConfigurePackage):
     """VIM - Vi IMproved."""
 
     name = "vim"
+    homepage = "http://www.vim.org/"
     version = "7.4"
     artifacts = ["bin/vim"]
 
