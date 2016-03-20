@@ -68,10 +68,14 @@ def install(ctx, package, force):
 
     try:
         for i in dependencies:
-            package = ctx.obj["packages"][i.name]
-            with package.prepare():
-                package.download()
-                package.install()
+            dep = ctx.obj["packages"][i.name]
+            if dep.is_installed and not force:
+                _succeed(_describe(dep, "already installed."))
+            else:
+                click.echo(_describe(dep, "starting installation..."))
+                with dep.prepare():
+                    dep.download()
+                    dep.install()
     except Exception as e:
         _fail(_describe(
             package,
