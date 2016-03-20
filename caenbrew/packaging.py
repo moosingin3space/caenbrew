@@ -204,7 +204,9 @@ class ConfigurePackage(ArtifactPackage):
 
         configure_options = getattr(self, "configure_options", {})
         self._cmd("./configure",
-                  "--prefix", self._config["prefix_dir"],
+                  # Some configure scripts don't like it if we separate the option
+                  # from its value with a space (such as cmake's).
+                  "--prefix={}".format(self._config["prefix_dir"]),
                   *configure_options,
                   title="Configuring package")
 
