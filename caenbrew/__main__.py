@@ -16,7 +16,7 @@ _HELP_SETTINGS = {
 @click.group(context_settings=_HELP_SETTINGS)
 @click.option("--verbose", "-v",
               is_flag=True,
-              help="Show all output")
+              help="Show all output.")
 @click.version_option()
 @click.pass_context
 def cli(ctx, verbose):
@@ -141,6 +141,24 @@ def info(package):
         _fail(_describe(package, "is not installed."))
 
 
+@cli.command(context_settings=_HELP_SETTINGS)
+@click.option("--search", "-s", default="", help="A search term.")
+@click.pass_context
+def list(ctx, search):
+    """List all packages."""
+    all_packages = ctx.obj["packages"]
+    package_names = all_packages.keys()
+    package_names.sort()
+    for name in package_names:
+        package = all_packages[name]
+        if search in package.name or search in package.__doc__:
+            if package.is_installed:
+                prefix = click.style("✓ ", fg="green")
+            else:
+                prefix = "  "
+            click.echo(_describe(package, "", prefix=prefix))
+
+
 def _succeed(message):
     u"""Print a success message.
 
@@ -167,7 +185,7 @@ def _fail(message):
                               message))
 
 
-def _describe(package, message):
+def _describe(package, message, prefix="Package "):
     """Describe a package with the given message.
 
     Given package = VimPackage, message = "already installed", this would
@@ -186,8 +204,11 @@ def _describe(package, message):
     except AttributeError:
         package_name = package
 
-    return "Package {} {}".format(click.style(package_name, bold=True),
-                                  message)
+    return "{}{} {}".format(
+        prefix,
+        click.style(package_name, bold=True),
+        message,
+    )
 
 
 def _package_names(packages):
