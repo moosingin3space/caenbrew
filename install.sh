@@ -42,6 +42,8 @@ add_local_dir_to_path() {
         echo '' >>"$PROFILE"
         echo "$PROFILE_MARKER" >>"$PROFILE"
         echo 'export PATH="$HOME/.local/bin:$PATH"' >>"$PROFILE"
+        echo 'export LD_RUN_PATH="$HOME/.local/lib:$LD_RUN_PATH"' >>"$PROFILE"
+        echo 'export LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH"' >>"$PROFILE"
     fi
 }
 
