@@ -249,7 +249,7 @@ class ConfigureBuildInstallPackage(TempDirMixin, ArtifactPackage):
 
 
 class AutotoolsPackage(ConfigureBuildInstallPackage):
-    """Install a package with autotools (marked by a `configure` script.)"""
+    """Install a package with autotools (marked by a `configure` script)."""
 
     def configure(self):
         """Configure the package with the `configure` script."""
@@ -279,8 +279,9 @@ class CmakeBuildPackage(ConfigureBuildInstallPackage):
         os.chdir(self.BUILD_DIR)
 
         configure_options = getattr(self, "configure_options", [])
+        prefix_dir = self._config["prefix_dir"]
         self._cmd("cmake", "..",
-                  "-DCMAKE_INSTALL_PREFIX={}".format(self._config["prefix_dir"]),
+                  "-DCMAKE_INSTALL_PREFIX={}".format(prefix_dir),
                   *configure_options,
                   title="Configuring package")
 

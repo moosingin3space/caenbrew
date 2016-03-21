@@ -1,5 +1,3 @@
-import os
-
 from ..packaging import ConfigureBuildInstallPackage, package
 
 
