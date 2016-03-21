@@ -1,8 +1,8 @@
-from ..packaging import ConfigurePackage, package
+from ..packaging import AutotoolsPackage, package
 
 
 @package
-class VimPackage(ConfigurePackage):
+class VimPackage(AutotoolsPackage):
     """VIM - Vi IMproved."""
 
     name = "vim"

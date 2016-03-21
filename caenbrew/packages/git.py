@@ -1,8 +1,8 @@
-from ..packaging import ConfigurePackage, package
+from ..packaging import AutotoolsPackage, package
 
 
 @package
-class GitPackage(ConfigurePackage):
+class GitPackage(AutotoolsPackage):
     """Git is a distributed version control system with fast performance."""
 
     name = "git"

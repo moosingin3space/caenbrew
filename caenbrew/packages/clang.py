@@ -59,6 +59,7 @@ class ClangPackage(TempDirMixin, ArtifactPackage):
 
     def install(self):
         """Install LLVM, Clang, and the clang tools."""
+        # TODO: This can probably be done with `CmakePackage`.
         self._cmd("mkdir", "build")
         os.chdir("build")
         self._cmd("cmake", "-G", "Unix Makefiles", "../llvm",

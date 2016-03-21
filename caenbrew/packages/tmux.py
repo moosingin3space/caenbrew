@@ -1,11 +1,11 @@
 from .libevent import LibeventPackage
 from .ncurses import NcursesPackage
 
-from ..packaging import ConfigurePackage, package
+from ..packaging import AutotoolsPackage, package
 
 
 @package
-class TmuxPackage(ConfigurePackage):
+class TmuxPackage(AutotoolsPackage):
     """tmux is a terminal multiplexer."""
 
     name = "tmux"

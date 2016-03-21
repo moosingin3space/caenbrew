@@ -1,8 +1,8 @@
-from ..packaging import ConfigurePackage, package
+from ..packaging import AutotoolsPackage, package
 
 
 @package
-class CmakePackage(ConfigurePackage):
+class CmakePackage(AutotoolsPackage):
     """Cmake is an open-source, cross-platform family of build tools."""
 
     name = "cmake"

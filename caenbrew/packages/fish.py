@@ -1,8 +1,8 @@
-from ..packaging import ConfigurePackage, package
+from ..packaging import AutotoolsPackage, package
 
 
 @package
-class FishPackage(ConfigurePackage):
+class FishPackage(AutotoolsPackage):
     """fish is a smart and user-friendly command line shell."""
 
     name = "fish"

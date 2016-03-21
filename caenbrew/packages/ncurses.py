@@ -1,15 +1,15 @@
-from ..packaging import ConfigurePackage, package
+from ..packaging import AutotoolsPackage, package
 
 
 @package
-class NcursesPackage(ConfigurePackage):
+class NcursesPackage(AutotoolsPackage):
     """ncurses: An event notification library."""
 
     name = "ncurses"
     homepage = "http://invisible-island.net/ncurses/"
     version = "5.9"
-
     artifacts = ["include/ncurses", "lib/libncurses.a"]
+
     url = "ftp://invisible-island.net/ncurses/ncurses.tar.gz"
 
     configure_options = [

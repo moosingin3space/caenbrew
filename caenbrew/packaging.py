@@ -197,27 +197,26 @@ class TempDirMixin(object):
                   title="Cleaning up")
 
 
-class ConfigurePackage(TempDirMixin, ArtifactPackage):
-    """Install a package with a configure-make-make install loop.
+class ConfigureBuildInstallPackage(TempDirMixin, ArtifactPackage):
+    """Install a package with a configure-build-install loop.
+
+    By default, the `build_and_install` is set to use `make`. The `configure`
+    function should be overridden by subclasses.
 
     The following variables should be defined by subclasses.
 
     :ivar str url: Required. The URL from which we can download the package.
     :ivar list configure_options: Optional. A list of arguments to pass to
-        `configure`.
+        the configuration program.
+    :ivar list make_options: Optional. A list of arguments to pass to `make`.
     """
 
-    def __init__(self, *args, **kwargs):
-        """Initialize the ConfigurePackage."""
-        super(ConfigurePackage, self).__init__(*args, **kwargs)
-
-        assert self.url
-
-    _ARCHIVE_DIR = "package_contents"
+    ARCHIVE_DIR = "package_contents"
     """The directory to extract the archive into."""
 
     def download(self):
         """Make a temporary directory and unpack the archive there."""
+        assert self.url
         archive_file = os.path.basename(self.url)
 
         self._cmd("curl", self.url,
@@ -225,18 +224,36 @@ class ConfigurePackage(TempDirMixin, ArtifactPackage):
                   # Follow redirects, such as those in Sourceforge links.
                   "--location",
                   title="Downloading {}".format(self.name))
-        self._cmd("mkdir", "-p", self._ARCHIVE_DIR)
+        self._cmd("mkdir", "-p", self.ARCHIVE_DIR)
         self._cmd("tar",
                   "-xf", archive_file,
-                  "-C", self._ARCHIVE_DIR,
+                  "-C", self.ARCHIVE_DIR,
                   "--strip-components", "1",
                   title="Extracting package")
 
     def install(self):
         """Configure, build, and install the package."""
-        os.chdir(self._ARCHIVE_DIR)
+        os.chdir(self.ARCHIVE_DIR)
+        self.configure()
+        self.build_and_install()
 
-        configure_options = getattr(self, "configure_options", {})
+    def configure(self):
+        """Configure the package."""
+        raise NotImplementedError()
+
+    def build_and_install(self):
+        """Build and install the package with make."""
+        make_options = getattr(self, "make_options", [])
+        self._cmd("make", *make_options, title="Building package")
+        self._cmd("make", "install", title="Installing package")
+
+
+class AutotoolsPackage(ConfigureBuildInstallPackage):
+    """Install a package with autotools (marked by a `configure` script.)"""
+
+    def configure(self):
+        """Configure the package with the `configure` script."""
+        configure_options = getattr(self, "configure_options", [])
         self._cmd("./configure",
                   # Some configure scripts don't like it if we separate the
                   # option from its value with a space (such as cmake's).
@@ -244,8 +261,28 @@ class ConfigurePackage(TempDirMixin, ArtifactPackage):
                   *configure_options,
                   title="Configuring package")
 
-        self._cmd("make", title="Building package")
-        self._cmd("make", "install", title="Installing package")
+
+class CmakeBuildPackage(ConfigureBuildInstallPackage):
+    """Install a package with Cmake.
+
+    Named `CmakeBuildPackage` to avoid conflicts with the `CmakePackage`
+    package.
+
+    `cmake` must be declared as a dependency of the package.
+    """
+
+    BUILD_DIR = "build"
+
+    def configure(self):
+        """Configure, build, and install the package."""
+        self._cmd("mkdir", "-p", self.BUILD_DIR)
+        os.chdir(self.BUILD_DIR)
+
+        configure_options = getattr(self, "configure_options", [])
+        self._cmd("cmake", "..",
+                  "-DCMAKE_INSTALL_PREFIX={}".format(self._config["prefix_dir"]),
+                  *configure_options,
+                  title="Configuring package")
 
 
 class SymlinkPackage(ArtifactPackage):

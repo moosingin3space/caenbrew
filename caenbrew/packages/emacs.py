@@ -1,8 +1,8 @@
-from ..packaging import ConfigurePackage, package
+from ..packaging import AutotoolsPackage, package
 
 
 @package
-class EmacsPackage(ConfigurePackage):
+class EmacsPackage(AutotoolsPackage):
     """emacs - GNU project Emacs."""
 
     name = "emacs"

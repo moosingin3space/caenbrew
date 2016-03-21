@@ -1,10 +1,10 @@
 import os
 
-from ..packaging import ConfigurePackage, package
+from ..packaging import ConfigureBuildInstallPackage, package
 
 
 @package
-class CppcheckPackage(ConfigurePackage):
+class CppcheckPackage(ConfigureBuildInstallPackage):
     """Cppcheck is a static analysis tool for C/C++ code."""
 
     name = "cppcheck"
@@ -14,12 +14,10 @@ class CppcheckPackage(ConfigurePackage):
 
     url = "http://downloads.sourceforge.net/project/cppcheck/cppcheck/1.72/cppcheck-1.72.tar.bz2"  # noqa
 
-    def install(self):
-        """Install with `make` invocations only."""
-        os.chdir(self._ARCHIVE_DIR)
+    def __init__(self, *args, **kwargs):
+        """Set `make` to use a `PREFIX`."""
+        super(CppcheckPackage, self).__init__(*args, **kwargs)
+        self.make_options = ["PREFIX={}".format(self._config["prefix_dir"])]
 
-        self._cmd("make", title="Building package")
-        self._cmd("make",
-                  "PREFIX={}".format(self._config["prefix_dir"]),
-                  "install",
-                  title="Installing package")
+    def configure(self):
+        """No-op."""
