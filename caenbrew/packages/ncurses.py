@@ -12,5 +12,13 @@ class NcursesPackage(ConfigurePackage):
     artifacts = ["include/ncurses", "lib/libncurses.a"]
     url = "ftp://invisible-island.net/ncurses/ncurses.tar.gz"
 
-    # https://groups.google.com/forum/#!topic/sage-devel/1F0b6Zpb4k0
-    configure_options = ["--enable-symlinks"]
+    configure_options = [
+        # Doesn't build on AFS:
+        # https://groups.google.com/forum/#!topic/sage-devel/1F0b6Zpb4k0
+        "--enable-symlinks",
+
+        # Doesn't build under GCC 5.x: http://trac.sagemath.org/ticket/18301
+        # Use system GCC and assume that it's suitably low-versioned (currently
+        # 4.8.5).
+        "CC=/usr/bin/gcc",
+    ]
