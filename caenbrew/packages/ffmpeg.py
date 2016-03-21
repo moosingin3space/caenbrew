@@ -31,5 +31,7 @@ class FfmpegPackage(AutotoolsPackage):
         """Help `ffmpg` detect `libx264` in `configure`."""
         super(FfmpegPackage, self).__init__(*args, **kwargs)
         prefix_dir = self._config["prefix_dir"]
-        self.configure_options += ["--extra-ldflags=-L{}/lib".format(prefix_dir),
-                                   "--extra-cflags=-I{}/include".format(prefix_dir)]
+        self.configure_options += ["--extra-ldflags=-L{}/lib"
+                                   .format(prefix_dir),
+                                   "--extra-cflags=-I{}/include"
+                                   .format(prefix_dir)]
