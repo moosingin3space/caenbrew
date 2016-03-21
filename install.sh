@@ -5,8 +5,8 @@ readonly CAENBREW_DIR="$HOME/.local"
 readonly PIP='/usr/um/python-2.7/bin/pip'
 
 # Assume that the user is using bash.
-readonly BASHRC="$HOME/.bashrc"
-readonly BASHRC_MARKER='# Added by Caenbrew.'
+readonly PROFILE="$HOME/.bash_profile"
+readonly PROFILE_MARKER='# Added by Caenbrew.'
 
 main() {
     install_caenbrew
@@ -25,14 +25,14 @@ install_caenbrew() {
 }
 
 add_local_dir_to_path() {
-    touch "$BASHRC"
-    if ! grep -q "$BASHRC_MARKER" "$BASHRC"; then
+    touch "$PROFILE"
+    if ! grep -q "$PROFILE_MARKER" "$PROFILE"; then
 	# Note: we need to put ~/.local/bin *before* the rest of our PATH,
 	# because there may be old CAEN executables of the same name in our
 	# PATH. We need to make sure our newer ones take precedence.
-        echo '' >>"$BASHRC"
-        echo "$BASHRC_MARKER" >>"$BASHRC"
-        echo 'export PATH="$HOME/.local/bin:$PATH"' >>"$BASHRC"
+        echo '' >>"$PROFILE"
+        echo "$PROFILE_MARKER" >>"$PROFILE"
+        echo 'export PATH="$HOME/.local/bin:$PATH"' >>"$PROFILE"
     fi
 }
 
