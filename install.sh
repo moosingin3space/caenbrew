@@ -2,6 +2,7 @@
 set -euo pipefail
 
 readonly CAENBREW_DIR="$HOME/.local"
+readonly CAENBREW_PACKAGE='git+git://github.com/arxanas/caenbrew.git'
 readonly PIP="$HOME/.local/bin/pip"
 
 # Assume that the user is using bash.
@@ -28,7 +29,7 @@ install_caenbrew() {
     # Caenbrew. But we need to do that anyways because Caenbrew installs all of
     # its packages to `~/.local` as well.
     mkdir -p "$CAENBREW_DIR"
-    "$PIP" install --user caenbrew
+    "$PIP" install --user "$CAENBREW_PACKAGE"
 }
 
 add_local_dir_to_path() {
