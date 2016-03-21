@@ -2,17 +2,24 @@
 set -euo pipefail
 
 readonly CAENBREW_DIR="$HOME/.local"
-readonly PIP='/usr/um/python-2.7/bin/pip'
+readonly PIP="$HOME/.local/bin/pip"
 
 # Assume that the user is using bash.
 readonly PROFILE="$HOME/.bash_profile"
 readonly PROFILE_MARKER='# Added by Caenbrew.'
 
 main() {
+    install_pip
     install_caenbrew
     add_local_dir_to_path
     echo "$(tput setaf 2)✓$(tput sgr0) Caenbrew successfully installed."
     echo '  You may have to restart your terminal.'
+}
+
+install_pip() {
+    # CAEN loses packages a lot, so we can't rely on them having Pip installed.
+    # In any case, it's very out-of-date.
+    easy_install --prefix="$CAENBREW_DIR" pip
 }
 
 install_caenbrew() {
