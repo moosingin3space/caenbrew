@@ -11,6 +11,14 @@ class CaenbrewPackage(BasePackage):
     # TODO: Actually get the correct version here.
     version = "0.0.0"
 
+    _CAENBREW_GIT_URL = "git+git://github.com/arxanas/caenbrew.git"
+    """The Git URL to install from via Pip.
+
+    By pointing to the actual Git repo, we can update packages without pushing
+    a new version to PyPI. (The disadvantage is that people can get stuck with
+    a non-working Caenbrew.)
+    """
+
     @property
     def is_installed(self):
         """If this code runs, then Caenbrew is installed."""
@@ -19,7 +27,7 @@ class CaenbrewPackage(BasePackage):
     def install(self):
         """If the user tries to force a reinstall, instead try an upgrade."""
         self._cmd("/usr/um/python-2.7/bin/pip",
-                  "install", "--upgrade", "caenbrew",
+                  "install", "--upgrade", self._CAENBREW_GIT_URL,
                   title="Upgrading caenbrew")
 
     def uninstall(self):
