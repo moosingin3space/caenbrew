@@ -28,6 +28,7 @@ class CaenbrewPackage(BasePackage):
         """If the user tries to force a reinstall, instead try an upgrade."""
         self._cmd("/usr/um/python-2.7/bin/pip",
                   "install", "--upgrade", self._CAENBREW_GIT_URL,
+                  "--user",
                   title="Upgrading caenbrew")
 
     def uninstall(self):
