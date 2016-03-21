@@ -20,6 +20,7 @@ main() {
 install_pip() {
     # CAEN loses packages a lot, so we can't rely on them having Pip installed.
     # In any case, it's very out-of-date.
+    mkdir -p "$CAENBREW_DIR/lib/python2.7/site-packages"
     easy_install --prefix="$CAENBREW_DIR" pip
 }
 
