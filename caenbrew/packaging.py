@@ -222,6 +222,8 @@ class ConfigurePackage(TempDirMixin, ArtifactPackage):
 
         self._cmd("curl", self.url,
                   "--output", archive_file,
+                  # Follow redirects, such as those in Sourceforge links.
+                  "--location",
                   title="Downloading {}".format(self.name))
         self._cmd("mkdir", "-p", self._ARCHIVE_DIR)
         self._cmd("tar",
