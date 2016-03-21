@@ -14,26 +14,18 @@ Then restart your terminal and brew away!
 
 # Usage
 
-To install a package, use `caenbrew install`:
+Commands:
 
-```
-$ caenbrew install fish
-==> Downloading fish... (curl https://fishshell.com/files/2.2.0/fish-2.2.0.tar.gz --output fish-2.2.0.tar.gz)
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 2161k  100 2161k    0     0   490k      0  0:00:04  0:00:04 --:--:--  490k
-==> Extracting package... (tar -xf fish-2.2.0.tar.gz -C package_contents --strip-components 1)
-==> Configuring package... (./configure --prefix /home/wkhan/.local)
-configure: WARNING: doxygen version 1.8.5 found, but 1.8.7 required
-==> Building package... (make)
-FISH_BUILD_VERSION = 2.2.0
-complete.cpp: In member function ‘void completer_t::complete_cmd(const wcstring&, bool, bool, bool, bool)’:
-complete.cpp:1153:123: warning: ignoring return value of ‘int expand_string(const wcstring&, std::vector<completion_t>&, expand_flags_t, parse_error_list_t*)’, declared with attribute warn_unused_result [-Wunused-result]
-         (void)expand_string(str_cmd, this->completions, ACCEPT_INCOMPLETE | DIRECTORIES_ONLY | this->expand_flags(), NULL);
-                                                                                                                           ^
-==> Installing package... (make install)
-/usr/bin/install: omitting directory ‘share/tools/web_config/js’
-/usr/bin/install: omitting directory ‘share/tools/web_config/partials’
-/usr/bin/install: omitting directory ‘share/tools/web_config/sample_prompts’
-✓ Package fish installed.
-```
+  * `caenbrew list`: List all packages.
+  * `caenbrew list -s '<term>'`: List all packages matching a search term.
+  * `caenbrew install <package>`: Install a package.
+  * `caenbrew install -f <package>`: Force-install or reinstall a package. (Use
+    `caenbrew install -f caenbrew` if you want to update Caenbrew.)
+  * `caenbrew uninstall <package>`: Uninstall a package.
+
+Caenbrew has knowledge of CAEN-specific build quirks. For example, the `ncurses`
+library has two separate bugs which may manifest when trying to compile it on
+CAEN. This is all taken care of for you by the package author.
+
+Caenbrew will automatically resolve and install dependencies for you. For
+example, the `tmux` package will automatically install `libevent` and `ncurses`.
