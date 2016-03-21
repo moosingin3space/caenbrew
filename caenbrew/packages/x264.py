@@ -1,3 +1,5 @@
+from .yasm import YasmPackage
+
 from ..packaging import AutotoolsPackage, package
 
 
@@ -8,6 +10,7 @@ class X264Package(AutotoolsPackage):
     name = "x264"
     homepage = "http://www.videolan.org/developers/x264.html"
     version = "0.148.x"
+    dependencies = [YasmPackage]
     artifacts = ["bin/x264",
                  "lib/libx264.a",
                  "lib/libx264.so",
