@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="caenbrew",
-    version="1.0.0",
+    version="1.0.1",
     author="Waleed Khan",
     author_email="wkhan@umich.edu",
     description="Install packages on CAEN.",
