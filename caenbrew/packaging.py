@@ -214,6 +214,12 @@ class ConfigureBuildInstallPackage(TempDirMixin, ArtifactPackage):
     ARCHIVE_DIR = "package_contents"
     """The directory to extract the archive into."""
 
+    BUILD_COMMAND = "make"
+    """The executable to run to build and install the package."""
+
+    INSTALL_COMMAND = "make"
+    """The executable to run to build and install the package."""
+
     def download(self):
         """Make a temporary directory and unpack the archive there."""
         assert self.url
@@ -243,18 +249,24 @@ class ConfigureBuildInstallPackage(TempDirMixin, ArtifactPackage):
 
     def build_and_install(self):
         """Build and install the package with make."""
-        make_options = getattr(self, "make_options", [])
-        self._cmd("make", *make_options, title="Building package")
-        self._cmd("make", "install", title="Installing package")
+        make_options = getattr(self, "make_options", ["-j8"])
+        self._cmd(self.BUILD_COMMAND,
+                  *make_options,
+                  title="Building package")
+        self._cmd(self.INSTALL_COMMAND, "install",
+                  title="Installing package")
 
 
 class AutotoolsPackage(ConfigureBuildInstallPackage):
     """Install a package with autotools (marked by a `configure` script)."""
 
+    CONFIGURE_COMMAND = "./configure"
+    """The command to run to configure the package."""
+
     def configure(self):
         """Configure the package with the `configure` script."""
         configure_options = getattr(self, "configure_options", [])
-        self._cmd("./configure",
+        self._cmd(self.CONFIGURE_COMMAND,
                   # Some configure scripts don't like it if we separate the
                   # option from its value with a space (such as cmake's).
                   "--prefix={}".format(self._config["prefix_dir"]),
