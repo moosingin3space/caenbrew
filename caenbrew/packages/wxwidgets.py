@@ -3,7 +3,7 @@ from ..packaging import AutotoolsPackage, package
 
 @package
 class WxWidgetsPackage(AutotoolsPackage):
-    """wxwidgets for GTK+"""
+    """wxwidgets for GTK+."""
 
     name = "wxwidgets"
     homepage = "http://wxwidgets.org"
