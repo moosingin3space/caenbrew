@@ -1,4 +1,4 @@
-from ..packaging import package, AutotoolsPackage
+from ..packaging import AutotoolsPackage, package
 
 
 @package
