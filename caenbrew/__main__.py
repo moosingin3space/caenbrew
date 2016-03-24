@@ -71,11 +71,12 @@ def install(ctx, package, force):
             dep = ctx.obj["packages"][i.name]
             if dep.is_installed and not force:
                 _succeed(_describe(dep, "already installed."))
-            else:
-                click.echo(_describe(dep, "starting installation..."))
-                with dep.prepare():
-                    dep.download()
-                    dep.install()
+                continue
+
+            click.echo(_describe(dep, "starting installation..."))
+            with dep.prepare():
+                dep.download()
+                dep.install()
     except Exception as e:
         _fail(_describe(
             package,

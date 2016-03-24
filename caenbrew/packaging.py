@@ -29,6 +29,7 @@ def calculate_dependencies(package_cls):
     """Get the dependencies for the package in installation order.
 
     :param BasePackage package_cls: The package class.
+    :returns list: The packages in the order that they should be installed.
     """
     graph = {}
 
@@ -42,14 +43,6 @@ def calculate_dependencies(package_cls):
 
     add_to_graph(package_cls)
     return toposort.toposort_flatten(graph)
-
-
-class InstallFailure(RuntimeError):
-    """Raised when an installation fails."""
-
-
-class UninstallFailure(RuntimeError):
-    """Raised when an uninstallation fails."""
 
 
 class BasePackage(object):
@@ -141,6 +134,13 @@ class BasePackage(object):
 
 class ArtifactPackage(BasePackage):
     """A package that creates certain files (called "artifacts").
+
+    Artifacts are used to determine whether or not a package is installed. If
+    every listed artifact file exists, then the package is considered to be
+    installed, and considered to not be installed otherwise.
+
+    For a new package, the artifacts should be a good sample of representative
+    installed files (such as one in `bin`, one in `include`, one in `lib`).
 
     The following variables should be defined by subclasses.
 
@@ -284,6 +284,7 @@ class CmakeBuildPackage(ConfigureBuildInstallPackage):
     """
 
     BUILD_DIR = "build"
+    """The directory to run `cmake` in."""
 
     def configure(self):
         """Configure, build, and install the package."""
